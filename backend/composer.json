@@ -1,0 +1,19 @@
+{
+    "name": "abdelrahman/backend",
+    "description": "back end for scandiweb full stack assessment",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Abdelrahman\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "El-Abdo",
+            "email": "abdulrahman.muhammad2090@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
