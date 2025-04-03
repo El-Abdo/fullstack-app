@@ -1,4 +1,5 @@
 <?php
+
 require 'config.php';
 
 try {
@@ -53,7 +54,6 @@ try {
 
     $pdo->exec($sql);
     echo "Tables created successfully";
-    } catch (PDOException $e) {
+} catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
-

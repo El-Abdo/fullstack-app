@@ -1,4 +1,5 @@
 <?php
+
 require 'config.php';
 
 $jsonString = file_get_contents('backend/config/data.json');
@@ -28,7 +29,7 @@ foreach ($data['data']['products'] as $product) {
 
     $insertAttribute = $pdo->prepare("INSERT INTO attributes (product_id, name, type) VALUES (?, ?, ?)");
     $insertAttributeItem = $pdo->prepare("INSERT INTO attribute_items (attribute_id, display_value, value, item_id) VALUES (?, ?, ?, ?)");
-    
+
     foreach ($product['attributes'] as $attribute) {
         $insertAttribute->execute([$productId, $attribute['name'], $attribute['type']]);
         $attributeId = $pdo->lastInsertId();
