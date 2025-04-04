@@ -8,6 +8,7 @@ try {
             drop table if exists attributes;
             drop table if exists product_gallery;
             drop table if exists prices;
+            drop table if exists orders;
             drop table if exists products;
             CREATE TABLE if not exists products (
                 id BIGINT AUTO_INCREMENT PRIMARY KEY, 
@@ -16,6 +17,12 @@ try {
                 description TEXT NOT NULL,
                 category VARCHAR(255) NOT NULL,
                 brand VARCHAR(255) NOT NULL
+            );
+
+            CREATE TABLE if not exists orders (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+                product_id BIGINT  NOT NULL,
+                FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
             );
 
             CREATE TABLE if not exists product_gallery (
