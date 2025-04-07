@@ -1,7 +1,10 @@
 <?php
 
-require 'config.php';
+require __DIR__ . '/../vendor/autoload.php';
 
+use Abdelrahman\Backend\Config\DB;
+
+$pdo = DB::getConnection();
 try {
     $sql = "
             drop table if exists attribute_items;           
@@ -20,7 +23,8 @@ try {
             );
 
             CREATE TABLE if not exists orders (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY, 
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                quantity INT NOT NULL default 1,
                 product_id BIGINT  NOT NULL,
                 FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
             );

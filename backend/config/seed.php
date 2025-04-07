@@ -1,9 +1,12 @@
 <?php
 
-require 'config.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$jsonString = file_get_contents('backend/config/data.json');
+use Abdelrahman\Backend\Config\DB;
+
+$jsonString = file_get_contents('config/data.json');
 $data = json_decode($jsonString, true);
+$pdo = DB::getConnection();
 
 $insertProduct = $pdo->prepare("INSERT INTO products (name, in_stock, description, category, brand) VALUES (?, ?, ?, ?, ?)");
 
