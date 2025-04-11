@@ -15,13 +15,15 @@ class ProductRepository
     public function findByCategory(?string $category = null): array
     {
         $sql = "SELECT p.*, 
-            pr.currency as price_currency, pr.amount as price_amount, pr.symbol as price_symbol, 
-            a.id as attr_id, a.name as attr_name, a.type as attr_type,
-            ai.display_value as attr_display_value, ai.value as attr_value
-            FROM products p
-            LEFT JOIN prices pr ON p.id = pr.product_id
-            LEFT JOIN attributes a ON p.id = a.product_id
-            LEFT JOIN attribute_items ai ON a.id = ai.attribute_id";
+                pr.currency as price_currency, pr.amount as price_amount, pr.symbol as price_symbol,
+                g.image_url,
+                a.id as attr_id, a.name as attr_name, a.type as attr_type,
+                ai.display_value as attr_display_value, ai.value as attr_value
+                FROM products p
+                LEFT JOIN prices pr ON p.id = pr.product_id
+                LEFT JOIN attributes a ON p.id = a.product_id
+                LEFT JOIN attribute_items ai ON a.id = ai.attribute_id
+                LEFT JOIN product_gallery g ON p.id = g.product_id";
 
         if ($category !== null) {
             $sql .= " WHERE p.category = ?";
@@ -48,13 +50,18 @@ class ProductRepository
         $products = [];
         $currentProductId = null;
         $currentProduct = null;
+        $gallery = [];
 
         foreach ($rows as $row) {
-            // New product
-            if ($currentProductId !== $row['id']) {
+            $productId = $row['id'];
+
+            if ($currentProductId !== $productId) {
                 if ($currentProduct !== null) {
+                    $currentProduct->setGallery($gallery);
                     $products[] = $currentProduct;
                 }
+
+                $gallery = [];
 
                 $currentProduct = ProductFactory::create([
                     'id' => $row['id'],
@@ -62,7 +69,7 @@ class ProductRepository
                     'description' => $row['description'],
                     'category' => $row['category'],
                     'brand' => $row['brand'],
-                    'in_stock' => (bool)$row['in_stock']
+                    'in_stock' => (bool)$row['in_stock'],
                 ]);
 
                 $currentProduct->setPrice([
@@ -71,11 +78,13 @@ class ProductRepository
                     'currency' => $row['price_currency']
                 ]);
 
-                $currentProductId = $row['id'];
-                continue;
+                $currentProductId = $productId;
             }
 
-            // Add attribute if exists
+            if (!empty($row['image_url']) && !in_array($row['image_url'], $gallery)) {
+                $gallery[] = $row['image_url'];
+            }
+
             if ($row['attr_id'] && !isset($currentProduct->getAttributes()[$row['attr_id']])) {
                 $attribute = AttributeFactory::create([
                     'id' => $row['attr_id'],
@@ -91,6 +100,7 @@ class ProductRepository
 
         // Add the last product
         if ($currentProduct !== null) {
+            $currentProduct->setGallery($gallery);
             $products[] = $currentProduct;
         }
 

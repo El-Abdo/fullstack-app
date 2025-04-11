@@ -60,6 +60,10 @@ class GraphQLController
                         'type' => Type::string(),
                         'resolve' => fn ($product) => $product->getFormattedPrice()
                     ],
+                    'gallery' => [
+                        'type' => Type::listOf(Type::string()),
+                        'resolve' => fn ($product) => $product->getGallery()
+                    ],
                     'attributes' => [
                         'type' => Type::listOf($attributeType),
                         'resolve' => fn ($product) => $product->getAttributes()

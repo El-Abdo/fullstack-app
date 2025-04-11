@@ -10,7 +10,7 @@ use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
-    $r->post('/graphql', [GraphQLController::class, 'handle']);
+    $r->post('/', [GraphQLController::class, 'handle']);
 });
 
 $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));

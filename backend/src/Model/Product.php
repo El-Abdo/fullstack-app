@@ -6,6 +6,7 @@ abstract class Product
 {
     protected array $price = [];
     protected array $attributes = [];
+    protected array $gallery = [];
 
     public function __construct(
         public readonly int $id,
@@ -37,5 +38,14 @@ abstract class Product
         return $this->attributes;
     }
 
+    public function setGallery(array $gallery): void
+    {
+        $this->gallery = $gallery;
+    }
+
+    public function getGallery(): array
+    {
+        return $this->gallery;
+    }
     abstract public function getType(): string;
 }
