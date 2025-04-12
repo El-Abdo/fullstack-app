@@ -1,28 +1,29 @@
-import { NavLink } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 export default function Header() {
+  const location = useLocation();
   const activeClasses = "text-green-400 underline";
   const inactiveClasses = "text-gray-600 hover:bg-gray-100";
 
+  const isActive = (path: string) => location.pathname === path;
+
   return (
     <header className="bg-gray-100 text-black p-4 flex gap-4">
-      <NavLink
-        to="/tech"
-        className={({ isActive }) =>
-          `${isActive ? activeClasses : inactiveClasses}`
-        }
+      <a
+        href="/tech"
+        className={isActive('/tech') ? activeClasses : inactiveClasses}
+        data-testid={isActive('/tech') ? 'active-category-link' : 'category-link'}
       >
         Tech
-      </NavLink>
+      </a>
 
-      <NavLink
-        to="/clothes"
-        className={({ isActive }) =>
-          `${isActive ? activeClasses : inactiveClasses}`
-        }
+      <a
+        href="/clothes"
+        className={isActive('/clothes') ? activeClasses : inactiveClasses}
+        data-testid={isActive('/clothes') ? 'active-category-link' : 'category-link'}
       >
         Clothes
-      </NavLink>
+      </a>
     </header>
   );
 }
