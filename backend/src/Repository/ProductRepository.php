@@ -2,27 +2,23 @@
 
 namespace Abdelrahman\Backend\Repository;
 
-use Abdelrahman\Backend\Factory\AttributeFactory;
 use Abdelrahman\Backend\Factory\ProductFactory;
-use Abdelrahman\Backend\Model\AttributeItem;
 
 class ProductRepository
 {
-    public function __construct(private \PDO $connection)
-    {
+    public function __construct(
+        private \PDO $connection,
+        private AttributeRepository $attributeRepository
+    ) {
     }
 
     public function findByCategory(?string $category = null): array
     {
         $sql = "SELECT p.*, 
                 pr.currency as price_currency, pr.amount as price_amount, pr.symbol as price_symbol,
-                g.image_url,
-                a.id as attr_id, a.name as attr_name, a.type as attr_type,
-                ai.display_value as attr_display_value, ai.value as attr_value
+                g.image_url
                 FROM products p
                 LEFT JOIN prices pr ON p.id = pr.product_id
-                LEFT JOIN attributes a ON p.id = a.product_id
-                LEFT JOIN attribute_items ai ON a.id = ai.attribute_id
                 LEFT JOIN product_gallery g ON p.id = g.product_id";
 
         if ($category !== null) {
@@ -58,6 +54,9 @@ class ProductRepository
             if ($currentProductId !== $productId) {
                 if ($currentProduct !== null) {
                     $currentProduct->setGallery($gallery);
+                    $currentProduct->setAttributes(
+                        $this->attributeRepository->findByProductId($currentProductId)
+                    );
                     $products[] = $currentProduct;
                 }
 
@@ -85,17 +84,6 @@ class ProductRepository
                 $gallery[] = $row['image_url'];
             }
 
-            if ($row['attr_id'] && !isset($currentProduct->getAttributes()[$row['attr_id']])) {
-                $attribute = AttributeFactory::create([
-                    'id' => $row['attr_id'],
-                    'name' => $row['attr_name'],
-                    'type' => $row['attr_type']
-                ], [
-                    new AttributeItem($row['attr_display_value'], $row['attr_value'])
-                ]);
-
-                $currentProduct->addAttribute($attribute);
-            }
         }
 
         // Add the last product

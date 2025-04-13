@@ -22,10 +22,9 @@ abstract class Product
     {
         $this->price = $price;
     }
-
-    public function addAttribute(Attribute $attribute): void
+    public function setAttributes(array $attributes): void
     {
-        $this->attributes[] = $attribute;
+        $this->attributes = $attributes;
     }
 
     public function getFormattedPrice(): string
@@ -36,6 +35,11 @@ abstract class Product
     public function getAttributes(): array
     {
         return $this->attributes;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function setGallery(array $gallery): void

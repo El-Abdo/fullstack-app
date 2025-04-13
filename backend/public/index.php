@@ -13,6 +13,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Abdelrahman\Backend\Config\DB;
 use Abdelrahman\Backend\Controller\GraphQLController;
+use Abdelrahman\Backend\Repository\AttributeRepository;
 use Abdelrahman\Backend\Repository\ProductRepository;
 use FastRoute\RouteCollector;
 
@@ -41,7 +42,8 @@ switch ($routeInfo[0]) {
 
         // Setup dependencies
         $db = DB::createConnection();
-        $repository = new ProductRepository($db);
+        $attrrepository = new AttributeRepository($db);
+        $repository = new ProductRepository($db, $attrrepository);
         $controller = new $class($repository);
 
         header('Content-Type: application/json');
