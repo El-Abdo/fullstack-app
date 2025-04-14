@@ -11,7 +11,6 @@ export default function ProductDetails() {
     throw new Error("useProductContext must be used within a ProductProvider");
   }
   const { products } = context;
-  console.log(products);
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
@@ -23,7 +22,7 @@ export default function ProductDetails() {
   } else if (!product.inStock) {
     return <div>Product is out of stock</div>;
   }
-  
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -122,7 +121,9 @@ export default function ProductDetails() {
             ))}
           </div>
           
-          <p className="text-2xl font-bold">{product.price}</p>
+          <p className="text-2xl font-bold">
+            {product.price.symbol}{product.price.amount.toFixed(2)} {product.price.currency}
+          </p>
           <button className="w-full bg-green-400 text-white py-3 rounded-md hover:bg-green-600 transition uppercase" data-testid="add-to-cart">
             add to cart
           </button>

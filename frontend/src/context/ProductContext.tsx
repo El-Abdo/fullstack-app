@@ -1,23 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-
-export type Product = {
-  id: string;
-  name: string;
-  description: string;
-  brand: string;
-  category: string;
-  gallery: string[];
-  price: string;
-  inStock: boolean;
-  attributes: {
-    name: string;
-    type: string;
-    items: {
-      displayValue: string;
-      value: string;
-    }[];
-  }[];
-};
+import { Product } from '../types/Product';
 
 type ProductContextType = {
   products: Product[];
@@ -44,7 +26,11 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
               brand
               category
               gallery
-              price
+              price {
+                currency
+                amount
+                symbol
+            }
               inStock
               attributes {
                 name

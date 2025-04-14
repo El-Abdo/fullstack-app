@@ -44,6 +44,15 @@ class GraphQLController
                 ]
             ]);
 
+            $priceType = new ObjectType([
+                'name' => 'Price',
+                'fields' => [
+                    'amount' => ['type' => Type::nonNull(Type::float())],
+                    'currency' => ['type' => Type::nonNull(Type::string())],
+                    'symbol' => ['type' => Type::nonNull(Type::string())]
+                ]
+            ]);
+
             $productType = new ObjectType([
                 'name' => 'Product',
                 'fields' => [
@@ -57,8 +66,8 @@ class GraphQLController
                         'resolve' => fn ($product) => $product->in_stock
                     ],
                     'price' => [
-                        'type' => Type::string(),
-                        'resolve' => fn ($product) => $product->getFormattedPrice()
+                        'type' => $priceType,
+                        'resolve' => fn ($product) => $product->getPrice()
                     ],
                     'gallery' => [
                         'type' => Type::listOf(Type::string()),

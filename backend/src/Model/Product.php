@@ -27,9 +27,9 @@ abstract class Product
         $this->attributes = $attributes;
     }
 
-    public function getFormattedPrice(): string
+    public function getPrice(): array
     {
-        return $this->price['symbol'] . number_format($this->price['amount'], 2) . ' ' . $this->price['currency'];
+        return $this->price;
     }
 
     public function getAttributes(): array
