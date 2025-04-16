@@ -1,5 +1,5 @@
 export type Product = {
-    id: string;
+    id: number;
     name: string;
     description: string;
     brand: string;
@@ -12,9 +12,11 @@ export type Product = {
     };
     inStock: boolean;
     attributes: {
+      id: number;
       name: string;
       type: string;
       items: {
+        id: number;
         displayValue: string;
         value: string;
       }[];

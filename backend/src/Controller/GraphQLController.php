@@ -23,6 +23,7 @@ class GraphQLController
             $attributeItemType = new ObjectType([
                 'name' => 'AttributeItem',
                 'fields' => [
+                    'id' => ['type' => Type::id()],
                     'displayValue' => ['type' => Type::string()],
                     'value' => ['type' => Type::string()]
                 ]

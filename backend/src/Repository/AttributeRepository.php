@@ -14,7 +14,7 @@ class AttributeRepository
     public function findByProductId(int $productId): array
     {
         $sql = "SELECT a.id, a.name, a.type, 
-                ai.display_value, ai.value
+                ai.display_value, ai.value, ai.id as item_id
                 FROM attributes a
                 JOIN attribute_items ai ON a.id = ai.attribute_id
                 WHERE a.product_id = ?
@@ -51,6 +51,7 @@ class AttributeRepository
             }
 
             $currentItems[] = new AttributeItem(
+                $row['item_id'],
                 $row['display_value'],
                 $row['value']
             );

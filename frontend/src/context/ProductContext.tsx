@@ -33,9 +33,11 @@ export const ProductProvider = ({ children }: { children: React.ReactNode }) => 
             }
               inStock
               attributes {
+                id
                 name
                 type
                 items {
+                  id
                   displayValue
                   value
                 }
