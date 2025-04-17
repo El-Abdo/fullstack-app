@@ -15,7 +15,7 @@ export default function ProductDetails() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const { id } = useParams<{ id: string }>();
-  const product = products.find(p => p.id === id);
+  const product = products.find(p => p.id.toString() === id);
 
   if (!product) {
     return <></>;
@@ -94,7 +94,7 @@ export default function ProductDetails() {
                     <h3 className="uppercase font-bold">{attr.name}:</h3>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {attr.items.map(item => (
-                        <ColorSwatch key={item.value} hexColor={item.value} />
+                        <ColorSwatch key={item.value} hexColor={item.value} isActive={true}/>
                       ))}
                     </div>
                   </div>
@@ -108,7 +108,7 @@ export default function ProductDetails() {
                   {attr.items.map(item => (
                     <button
                       key={item.value}
-                      className="px-3 py-1 border rounded-md hover:bg-black hover:text-white hover:cursor-pointer transition"
+                      className="px-3 py-1 border hover:bg-black hover:text-white hover:cursor-pointer transition"
                     >
                       {item.value}
                     </button>
@@ -124,7 +124,7 @@ export default function ProductDetails() {
           <p className="text-2xl font-bold">
             {product.price.symbol}{product.price.amount.toFixed(2)} {product.price.currency}
           </p>
-          <button className="w-full bg-green-400 text-white py-3 rounded-md hover:bg-green-600 transition uppercase" data-testid="add-to-cart">
+          <button className="w-full bg-green-400 text-white py-3 hover:bg-green-600 transition uppercase" data-testid="add-to-cart">
             add to cart
           </button>
 
