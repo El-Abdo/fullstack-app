@@ -16,6 +16,7 @@ import { Product } from "../types/Product";
       >
         <div className="my-4 group relative w-full h-80">
             <img
+              onClick={() => product.inStock && navigate(`/${product.category}/${product.id}`)}
               src={product.gallery[0]}
               alt={product.name}
               className={`w-full h-full object-cover transition-all ${
