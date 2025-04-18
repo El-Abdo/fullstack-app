@@ -62,18 +62,18 @@ export default function ProductDetails() {
                   onClick={() => setActiveImageIndex(prev => 
                     (prev - 1 + product.gallery.length) % product.gallery.length
                   )}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center shadow-md"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black text-white w-8 h-8 flex items-center cursor-pointer justify-center opacity-70"
                 >
-                  &larr;
+                  {'<'}
                 </button>
                 <button
                   onClick={() => setActiveImageIndex(prev => 
                     (prev + 1) % product.gallery.length
                   )}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center shadow-md"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white w-8 h-8 flex items-center cursor-pointer justify-center opacity-70"
                 >
-                  &rarr;
-                </button>
+                  {'>'}
+                  </button>
               </>
             )}
           </div>
