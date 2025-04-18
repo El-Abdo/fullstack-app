@@ -1,12 +1,17 @@
 import { useProductContext } from "../context/ProductContext";
+import { useOrder } from "../context/OrderContext";
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { toKebabCase } from "../utils/toKebabCase";
-import ColorSwatch from "../components/Swatch";
+import { isSelected } from "../utils/isSelected";
+import ColorSwatch from "../components/SwatchItem";
+import TextItem from "../components/TextItem";
 
 export default function ProductDetails() {
   const context = useProductContext();
+  const { addToCart } = useOrder();
+
   if (!context) {
     throw new Error("useProductContext must be used within a ProductProvider");
   }
@@ -17,11 +22,45 @@ export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const product = products.find(p => p.id.toString() === id);
 
+  const [productAttributes, setProductAttributes] = useState(
+    product?.attributes.map(attr => ({
+      id: attr.id,
+      selectedItemId: attr.items[0].id,
+    })) || []
+  );
+
+  const handleSelectAttribute = (attrId: number, itemId: number) => {
+    setProductAttributes(prev => {
+      const exists = prev.find(a => a.id === attrId);
+      if (exists) {
+        return prev.map(a =>
+          a.id === attrId ? { ...a, selectedItemId: itemId } : a
+        );
+      }
+      return prev;
+    });
+  };
+
   if (!product) {
     return <></>;
   } else if (!product.inStock) {
     return <div>Product is out of stock</div>;
   }
+
+  
+
+  const handleAddToCart = () => {
+    
+    addToCart({
+      productId: product.id,
+      name: product.name,
+      price: product.price.amount,
+      symbol: product.price.symbol,
+      productImage: product.gallery[0],
+      selectedAttributes: productAttributes,
+      allAttributes: product.attributes,
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -94,7 +133,9 @@ export default function ProductDetails() {
                     <h3 className="uppercase font-bold">{attr.name}:</h3>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {attr.items.map(item => (
-                        <ColorSwatch key={item.value} hexColor={item.value} isActive={true}/>
+                        <div onClick={() => handleSelectAttribute(attr.id, item.id)}>
+                          <ColorSwatch key={item.value} hexColor={item.value} isActive={true} isSelected={isSelected(attr.id, item.id, productAttributes)}/>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -106,12 +147,9 @@ export default function ProductDetails() {
                 <h3 className="uppercase font-bold">{attr.name}:</h3>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {attr.items.map(item => (
-                    <button
-                      key={item.value}
-                      className="px-3 py-1 border hover:bg-black hover:text-white hover:cursor-pointer transition"
-                    >
-                      {item.value}
-                    </button>
+                     <div onClick={() => handleSelectAttribute(attr.id, item.id)}>
+                     <TextItem key={item.value} value={item.value} isActive={true} isSelected={isSelected(attr.id, item.id, productAttributes)}/>
+                   </div>
                   ))}
                 </div>
               </div>)
@@ -124,7 +162,7 @@ export default function ProductDetails() {
           <p className="text-2xl font-bold">
             {product.price.symbol}{product.price.amount.toFixed(2)} {product.price.currency}
           </p>
-          <button className="w-full bg-green-400 text-white py-3 hover:bg-green-600 transition uppercase" data-testid="add-to-cart">
+          <button onClick={handleAddToCart} className="w-full bg-green-400 text-white py-3 hover:bg-green-600 transition uppercase" data-testid="add-to-cart">
             add to cart
           </button>
 
