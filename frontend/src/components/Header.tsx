@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import CartOverlay from './CartOverlay';
 
 export default function Header() {
   const activeClasses = "text-green-400 underline";
@@ -26,6 +27,10 @@ export default function Header() {
       >
         Clothes
       </a>
+
+      <div data-testid='cart-btn' className='ml-auto'>
+        <CartOverlay />
+      </div>
     </header>
   );
 }
