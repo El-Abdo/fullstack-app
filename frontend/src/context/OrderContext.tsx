@@ -85,7 +85,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }))
     }));
   
-    fetch('http://localhost:8000/', {
+    fetch('https://scanditest.alwaysdata.net/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
