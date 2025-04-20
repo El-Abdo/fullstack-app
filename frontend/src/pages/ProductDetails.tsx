@@ -1,12 +1,13 @@
 import { useProductContext } from "../context/ProductContext";
 import { useOrder } from "../context/OrderContext";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { toKebabCase } from "../utils/toKebabCase";
 import { isSelected } from "../utils/isSelected";
 import ColorSwatch from "../components/SwatchItem";
 import TextItem from "../components/TextItem";
+import { SelectedAttribute } from "../types/Order";
 
 export default function ProductDetails() {
   const context = useProductContext();
@@ -21,13 +22,21 @@ export default function ProductDetails() {
 
   const { id } = useParams<{ id: string }>();
   const product = products.find(p => p.id.toString() === id);
+  
+  const [productAttributes, setProductAttributes] = useState<SelectedAttribute[]>([]);
 
-  const [productAttributes, setProductAttributes] = useState(
-    product?.attributes.map(attr => ({
-      id: attr.id,
-      selectedItemId: attr.items[0].id,
-    })) || []
-  );
+  useEffect(() => {
+    if (product) {
+      setProductAttributes(
+        product.attributes.map(attr => ({
+          id: attr.id,
+          selectedItemId: null,
+        }))
+      );
+    }
+  }, [product]);
+  const allAttributesSelected = productAttributes.length > 0 && 
+  productAttributes.every(attr => attr.selectedItemId !== null);
 
   const handleSelectAttribute = (attrId: number, itemId: number) => {
     setProductAttributes(prev => {
@@ -37,10 +46,10 @@ export default function ProductDetails() {
           a.id === attrId ? { ...a, selectedItemId: itemId } : a
         );
       }
-      return prev;
+      return [...prev, { id: attrId, selectedItemId: itemId }];
     });
   };
-
+  
   if (!product) {
     return <></>;
   } else if (!product.inStock) {
@@ -50,7 +59,8 @@ export default function ProductDetails() {
   
 
   const handleAddToCart = () => {
-    
+    if (!allAttributesSelected) return;
+
     addToCart({
       productId: product.id,
       name: product.name,
@@ -123,17 +133,16 @@ export default function ProductDetails() {
           <h1 className="text-3xl font-bold">{product.name}</h1>
           
           <div className="space-y-2">
-            {product.attributes?.map(attr => (
+            {product.attributes?.map((attr) => (
                 <>
                 {attr.type === 'swatch' ? (
                   <div 
                     key={attr.name}
-                    data-testid={`product-attribute-${toKebabCase(attr.name)}`}
                   >
                     <h3 className="uppercase font-bold">{attr.name}:</h3>
-                    <div className="flex flex-wrap gap-2 mt-1">
+                    <div className="flex flex-wrap gap-2 mt-1" data-testid={`product-attribute-${toKebabCase(attr.name)}`}>
                       {attr.items.map(item => (
-                        <div onClick={() => handleSelectAttribute(attr.id, item.id)}>
+                        <div onClick={() => handleSelectAttribute(attr.id, item.id)} data-testid={`product-attribute-${toKebabCase(attr.name)}-${item.value}`}>
                           <ColorSwatch key={item.value} hexColor={item.value} isActive={true} isSelected={isSelected(attr.id, item.id, productAttributes)}/>
                         </div>
                       ))}
@@ -142,13 +151,12 @@ export default function ProductDetails() {
                 ) : (
                 <div 
                 key={attr.name}
-                data-testid={`product-attribute-${toKebabCase(attr.name)}`}
               >
                 <h3 className="uppercase font-bold">{attr.name}:</h3>
-                <div className="flex flex-wrap gap-2 mt-1">
+                <div className="flex flex-wrap gap-2 mt-1" data-testid={`product-attribute-${toKebabCase(attr.name)}`}>
                   {attr.items.map(item => (
-                     <div onClick={() => handleSelectAttribute(attr.id, item.id)}>
-                     <TextItem key={item.value} value={item.value} isActive={true} isSelected={isSelected(attr.id, item.id, productAttributes)}/>
+                     <div onClick={() => handleSelectAttribute(attr.id, item.id)} data-testid={`product-attribute-${toKebabCase(attr.name)}-${item.value}`}>
+                      <TextItem key={item.value} value={item.value} isActive={true} isSelected={isSelected(attr.id, item.id, productAttributes)}/>
                    </div>
                   ))}
                 </div>
@@ -162,7 +170,7 @@ export default function ProductDetails() {
           <p className="text-2xl font-bold">
             {product.price.symbol}{product.price.amount.toFixed(2)} {product.price.currency}
           </p>
-          <button onClick={handleAddToCart} className="w-full bg-green-400 text-white py-3 hover:bg-green-600 transition uppercase" data-testid="add-to-cart">
+          <button onClick={handleAddToCart} data-testid="add-to-cart" disabled={!allAttributesSelected} className={`w-full text-white py-3 transition uppercase ${allAttributesSelected ? 'bg-green-400 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`} >
             add to cart
           </button>
 
