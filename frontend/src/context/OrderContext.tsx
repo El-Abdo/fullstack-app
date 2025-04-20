@@ -6,6 +6,7 @@ interface OrderContextType {
   addToCart: (item: Omit<OrderItem, "quantity">) => void;
   removeFromCart: (index: number) => void;
   increaseQuantity: (index: number) => void;
+  submitOrder: () => void;
 }
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
@@ -73,8 +74,38 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setOrder({ items: newItems, total: calculateTotal(newItems), symbol: order.symbol });
   };
 
+
+  const submitOrder = () => {
+    const items = order.items.map(item => ({
+      product_id: item.productId,
+      quantity: item.quantity,
+      attributes: item.selectedAttributes.map(attr => ({
+        attribute_id: attr.id,
+        attribute_item_id: attr.selectedItemId
+      }))
+    }));
+  
+    fetch('http://localhost:8000/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: `
+          mutation CreateOrder($input: [CreateOrderInput!]!) {
+            createOrder(input: $input)
+          }
+        `,
+        variables: {
+          input: items 
+        }
+      }),
+    });
+  
+    setOrder({ items: [], total: 0, symbol: order.symbol });
+    localStorage.removeItem('order');
+  };
+  
   return (
-    <OrderContext.Provider value={{ order, addToCart, removeFromCart, increaseQuantity }}>
+    <OrderContext.Provider value={{ order, addToCart, removeFromCart, increaseQuantity, submitOrder }}>
       {children}
     </OrderContext.Provider>
   );

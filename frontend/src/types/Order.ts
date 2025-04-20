@@ -1,6 +1,6 @@
   export type SelectedAttribute = {
     id: number;
-    selectedItemId: number;
+    selectedItemId: number | null;
   };
   
   export type OrderItem = {
