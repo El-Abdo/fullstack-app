@@ -13,6 +13,14 @@ export default function Header() {
   return (
     <header className="bg-gray-100 text-black p-4 flex gap-4">
       <a
+        href="/all"
+        className={isActive('all') ? activeClasses : inactiveClasses}
+        data-testid={isActive('all') ? 'active-category-link' : 'category-link'}
+      >
+        All
+      </a>
+
+      <a
         href="/tech"
         className={isActive('tech') ? activeClasses : inactiveClasses}
         data-testid={isActive('tech') ? 'active-category-link' : 'category-link'}

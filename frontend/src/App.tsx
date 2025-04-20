@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Tech from "./pages/Tech";
 import Clothes from "./pages/Clothes";
 import ProductDetails from "./pages/ProductDetails";
+import All from "./pages/All";
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
       <Header />
       <Routes>
         <Route path="/tech" element={<Tech />} />
-        <Route path="/" element={<Navigate to="/tech" />} />
+        <Route path="/all" element={<All />} />
+        <Route path="/" element={<Navigate to="/all" />} />
         <Route path="/clothes" element={<Clothes />} />
         <Route path="/:category/:id" element={<ProductDetails />} />
       </Routes>
