@@ -7,7 +7,7 @@ import { toKebabCase } from "../utils/toKebabCase";
 import { isSelected } from "../utils/isSelected";
 
 export default function CartOverlay() {
-  const { order, increaseQuantity, removeFromCart } = useOrder();
+  const { order, increaseQuantity, removeFromCart, submitOrder } = useOrder();
   const [isOpen, setIsOpen] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   
@@ -21,16 +21,27 @@ export default function CartOverlay() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+
+  const prevItemCountRef = useRef(order.items.length);
+
   useEffect(() => {
-    if (isOpen && order.items.length === 0) {
-      setIsOpen(false);
+    const prevItemCount = prevItemCountRef.current;
+    const currentItemCount = order.items.length;
+  
+    const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
+    const prevTotalQuantity = prevItemCountRef.current;
+  
+    if (currentItemCount > prevItemCount || totalQuantity > prevTotalQuantity) {
+      setIsOpen(true);
     }
-  }, [order.items, isOpen]);
+  
+    prevItemCountRef.current = totalQuantity;
+  }, [order.items]);
+
+  const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
   const toggleOverlay = () => {
-    if (order.items.length > 0) {
       setIsOpen((prev) => !prev);
-    }
   };
 
   return (
@@ -38,11 +49,12 @@ export default function CartOverlay() {
       <button
         onClick={toggleOverlay}
         className={`h-6 w-6 transition-opacity duration-300 cursor-pointer ${
-          order.items.length === 0 ? "opacity-40 pointer-events-none" : "opacity-100"
+          order.items.length === 0 ? "opacity-40" : ""
         }`}
       >
+
         <img src={Cart} alt="Cart" />
-        {order.items.reduce((total, item) => total + item.quantity, 0) > 0 && (
+        {totalQuantity > 0 && (
         <div className="absolute -top-2 -right-2 rounded-full bg-black 
           min-w-[1.25rem] h-5 flex items-center justify-center 
           text-xs text-white px-1 font-medium">
@@ -53,7 +65,8 @@ export default function CartOverlay() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-8 right-0 w-[24rem] bg-white border shadow-lg z-1 p-4">
+        <div className="absolute top-8 right-0 w-[24rem] bg-white border shadow-lg z-1 p-4" data-testid="cart-overlay">
+          {totalQuantity} {totalQuantity === 1 ? "Item" : "Items"}
           {order.items.map((item, index) => (
             <div key={index} className="border-b pb-4 mb-4">
               <div className="flex gap-4">
@@ -116,7 +129,7 @@ export default function CartOverlay() {
           <div className="text-xs font-bold" data-testid='cart-total'>
             Total: {order.symbol}{order.total.toFixed(2)}
           </div>
-          <button className="w-full bg-green-400 text-white py-3 mt-3 hover:bg-green-600 transition uppercase" data-testid="add-to-cart">
+          <button onClick={submitOrder} className="w-full bg-green-400 text-white py-3 mt-3 hover:bg-green-600 transition uppercase">
             place order
           </button>
         </div>
