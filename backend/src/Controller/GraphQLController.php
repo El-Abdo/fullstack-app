@@ -3,7 +3,9 @@
 namespace Abdelrahman\Backend\Controller;
 
 use Abdelrahman\Backend\Repository\ProductRepository;
+use Abdelrahman\Backend\Service\OrderService;
 use GraphQL\GraphQL;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
@@ -11,10 +13,12 @@ use GraphQL\Type\Schema;
 class GraphQLController
 {
     private ProductRepository $repository;
+    private OrderService $orderService;
 
-    public function __construct(ProductRepository $repository)
+    public function __construct(ProductRepository $repository, OrderService $orderService)
     {
         $this->repository = $repository;
+        $this->orderService = $orderService;
     }
 
     public function handle(): string
@@ -98,8 +102,58 @@ class GraphQLController
                 ]
             ]);
 
+
+            $orderAttributeInputType = new InputObjectType([
+                'name' => 'OrderAttributeInput',
+                'fields' => [
+                    'attribute_id' => ['type' => Type::nonNull(Type::id())],
+                    'attribute_item_id' => ['type' => Type::nonNull(Type::id())]
+                ]
+            ]);
+
+            $createOrderInputType = new InputObjectType([
+                'name' => 'CreateOrderInput',
+                'fields' => [
+                    'product_id' => ['type' => Type::nonNull(Type::id())],
+                    'attributes' => ['type' => Type::nonNull(Type::listOf($orderAttributeInputType))],
+                    'quantity' => ['type' => Type::nonNull(Type::int())]
+                ]
+            ]);
+
+            $mutationType = new ObjectType([
+                'name' => 'Mutation',
+                'fields' => [
+                    'createOrder' => [
+                        'type' => Type::boolean(),
+                        'args' => [
+                            'input' => ['type' => Type::nonNull(Type::listOf(Type::nonNull($createOrderInputType)))]
+                        ],
+                        'resolve' => function ($root, $args) {
+                            $items = [];
+
+                            foreach ($args['input'] as $input) {
+                                foreach ($input['attributes'] as $attr) {
+                                    $items[] = [
+                                        'product_id' => $input['product_id'],
+                                        'attribute_id' => $attr['attribute_id'],
+                                        'attribute_item_id' => $attr['attribute_item_id'],
+                                        'quantity' => $input['quantity']
+                                    ];
+                                }
+                            }
+
+                            $this->orderService->createOrder(['items' => $items]);
+                            return true;
+                        }
+
+                    ]
+                ]
+
+            ]);
+
             $schema = new Schema([
-                'query' => $queryType
+                'query' => $queryType,
+                'mutation' => $mutationType
             ]);
 
             $rawInput = file_get_contents('php://input');

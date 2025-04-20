@@ -15,6 +15,7 @@ use Abdelrahman\Backend\Config\DB;
 use Abdelrahman\Backend\Controller\GraphQLController;
 use Abdelrahman\Backend\Repository\AttributeRepository;
 use Abdelrahman\Backend\Repository\ProductRepository;
+use Abdelrahman\Backend\Service\OrderService;
 use FastRoute\RouteCollector;
 
 use function FastRoute\simpleDispatcher;
@@ -44,7 +45,8 @@ switch ($routeInfo[0]) {
         $db = DB::createConnection();
         $attrrepository = new AttributeRepository($db);
         $repository = new ProductRepository($db, $attrrepository);
-        $controller = new $class($repository);
+        $orderService = new OrderService($db);
+        $controller = new $class($repository, $orderService);
 
         header('Content-Type: application/json');
         echo $controller->$method($vars);

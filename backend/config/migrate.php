@@ -24,9 +24,13 @@ try {
 
             CREATE TABLE if not exists orders (
                 id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                quantity INT NOT NULL default 1,
-                product_id BIGINT  NOT NULL,
-                FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+                product_id BIGINT NOT NULL,
+                attribute_id BIGINT NOT NULL,
+                attribute_item_id BIGINT NOT NULL,
+                quantity INT NOT NULL,
+                FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+                FOREIGN KEY (attribute_id) REFERENCES attributes(id) ON DELETE CASCADE,
+                FOREIGN KEY (attribute_item_id) REFERENCES attribute_items(id) ON DELETE CASCADE
             );
 
             CREATE TABLE if not exists product_gallery (
