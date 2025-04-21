@@ -3,6 +3,9 @@ import { OrderItem, OrderState, SelectedAttribute } from "../types/Order";
 
 interface OrderContextType {
   order: OrderState;
+  isOverlayOpen: boolean;
+  toggleOverlay: () => void;
+  closeOverlay: () => void;
   addToCart: (item: Omit<OrderItem, "quantity">) => void;
   removeFromCart: (index: number) => void;
   increaseQuantity: (index: number) => void;
@@ -18,6 +21,7 @@ const getStorage = (): OrderState => {
 
 export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [order, setOrder] = useState<OrderState>(getStorage());
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("order", JSON.stringify(order));
@@ -103,9 +107,10 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setOrder({ items: [], total: 0, symbol: order.symbol });
     localStorage.removeItem('order');
   };
-  
+  const toggleOverlay = () => setIsOverlayOpen(prev => !prev);
+  const closeOverlay = () => setIsOverlayOpen(false);
   return (
-    <OrderContext.Provider value={{ order, addToCart, removeFromCart, increaseQuantity, submitOrder }}>
+    <OrderContext.Provider value={{ order, addToCart, removeFromCart, increaseQuantity, submitOrder, isOverlayOpen, toggleOverlay, closeOverlay }}>
       {children}
     </OrderContext.Provider>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useOrder } from "../context/OrderContext";
 import Cart from "../assets/cart-shopping-regular.svg";
 import ColorSwatch from "./SwatchItem";
@@ -7,19 +7,18 @@ import { toKebabCase } from "../utils/toKebabCase";
 import { isSelected } from "../utils/isSelected";
 
 export default function CartOverlay() {
-  const { order, increaseQuantity, removeFromCart, submitOrder } = useOrder();
-  const [isOpen, setIsOpen] = useState(false);
+  const { order, increaseQuantity, removeFromCart, submitOrder, isOverlayOpen, closeOverlay, toggleOverlay } = useOrder();
   const overlayRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (overlayRef.current && !overlayRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        closeOverlay();
       }
     };    
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  });
 
 
   const prevItemCountRef = useRef(order.items.length);
@@ -32,17 +31,14 @@ export default function CartOverlay() {
     const prevTotalQuantity = prevItemCountRef.current;
   
     if (currentItemCount > prevItemCount || totalQuantity > prevTotalQuantity) {
-      setIsOpen(true);
+      toggleOverlay();
     }
   
     prevItemCountRef.current = totalQuantity;
-  }, [order.items]);
+  }, [order.items , toggleOverlay]);
 
   const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
-  const toggleOverlay = () => {
-      setIsOpen((prev) => !prev);
-  };
 
   return (
     <div className="relative inline-flex" ref={overlayRef}>
@@ -64,9 +60,9 @@ export default function CartOverlay() {
 
       </button>
 
-      {isOpen && (
-        <div className="absolute top-8 right-0 w-[24rem] bg-white border shadow-lg z-1 p-4" data-testid="cart-overlay">
-          {totalQuantity} {totalQuantity === 1 ? "Item" : "Items"}
+      {isOverlayOpen && (
+        <div className="absolute top-8 right-0 w-[24rem] bg-white border shadow-lg bg-opacity-40 z-20 p-4" data-testid="cart-overlay">
+          <span className="font-semibold">My Bag </span>{totalQuantity} {totalQuantity === 1 ? "Item" : "Items"}
           {order.items.map((item, index) => (
             <div key={index} className="border-b pb-4 mb-4">
               <div className="flex gap-4">
@@ -126,8 +122,8 @@ export default function CartOverlay() {
             </div>
           ))}
 
-          <div className="text-xs font-bold" data-testid='cart-total'>
-            Total: {order.symbol}{order.total.toFixed(2)}
+          <div className="flex text-xs font-bold" data-testid='cart-total'>
+            Total <span className="ml-auto"> {order.symbol}{order.total.toFixed(2)}</span>
           </div>
           <button onClick={submitOrder} className="w-full bg-green-400 text-white py-3 mt-3 hover:bg-green-600 transition uppercase">
             place order
