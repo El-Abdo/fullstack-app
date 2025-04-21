@@ -11,7 +11,7 @@ export default function Header() {
   const isActive = (path: string) => category === path;
 
   return (
-    <header className="bg-gray-100 text-black p-4 flex gap-4">
+    <header className="relative bg-gray-100 text-black p-4 flex gap-4 z-20">
       <a
         href="/all"
         className={isActive('all') ? activeClasses : inactiveClasses}
