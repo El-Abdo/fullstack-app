@@ -21,22 +21,6 @@ export default function CartOverlay() {
   });
 
 
-  const prevItemCountRef = useRef(order.items.length);
-
-  useEffect(() => {
-    const prevItemCount = prevItemCountRef.current;
-    const currentItemCount = order.items.length;
-  
-    const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
-    const prevTotalQuantity = prevItemCountRef.current;
-  
-    if (currentItemCount > prevItemCount || totalQuantity > prevTotalQuantity) {
-      toggleOverlay();
-    }
-  
-    prevItemCountRef.current = totalQuantity;
-  }, [order.items , toggleOverlay]);
-
   const totalQuantity = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
 

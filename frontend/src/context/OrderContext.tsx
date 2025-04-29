@@ -59,6 +59,8 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       total: calculateTotal(newItems),
       symbol: newItem.symbol,
     });
+
+    setIsOverlayOpen(true);
   };
 
   const removeFromCart = (index: number) => {
