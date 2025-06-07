@@ -9,18 +9,18 @@ import QuickShop from "./QuickShop";
 
     return (
       <div
-        className={`p-4 group w-[16rem] sm:w-[18rem] flex flex-col h-full ${
+        onClick={() => navigate(`/${product.category}/${product.id}`)}
+        className={`p-4 group w-[16rem] sm:w-[18rem] flex flex-col h-full cursor-pointer ${
           product.inStock ? 'hover:shadow-lg' : ''
         }`}
         data-testid={`product-${toKebabCase(product.name)}`}
       >
         <div className="my-4 relative w-full h-80">
             <img
-              onClick={() => product.inStock && navigate(`/${product.category}/${product.id}`)}
               src={product.gallery[0]}
               alt={product.name}
-              className={`w-full h-full object-cover transition-all cursor-pointer ${
-                !product.inStock ? 'filter grayscale brightness-80' : ''
+              className={`w-full h-full object-cover transition-all ${
+                !product.inStock ? 'filter grayscale brightness-80 ' : ''
               }`}
             />
           {!product.inStock && (

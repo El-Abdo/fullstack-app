@@ -169,7 +169,7 @@ export default function ProductDetails() {
             <p className="text-2xl font-bold">
               {product.price.symbol}{product.price.amount.toFixed(2)} {product.price.currency}
             </p>
-            <button onClick={handleAddToCart} data-testid="add-to-cart" disabled={!allAttributesSelected} className={`w-full text-white py-3 transition uppercase ${allAttributesSelected ? 'bg-green-400 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`} >
+            <button onClick={() => product.inStock && handleAddToCart()} data-testid="add-to-cart" disabled={!allAttributesSelected || !product.inStock} className={`w-full text-white py-3 transition uppercase ${allAttributesSelected && product.inStock ? 'bg-green-400 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`} >
               add to cart
             </button>
             <div className="prose max-w-none" data-testid="product-description">
