@@ -52,10 +52,7 @@ export default function ProductDetails() {
   
   if (!product) {
     return <></>;
-  } else if (!product.inStock) {
-    return <div>Product is out of stock</div>;
-  }
-
+  } 
   
 
   const handleAddToCart = () => {
