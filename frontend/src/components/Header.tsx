@@ -2,8 +2,8 @@ import { useLocation } from 'react-router-dom';
 import CartOverlay from './CartOverlay';
 
 export default function Header() {
-  const activeClasses = "text-green-400 underline";
-  const inactiveClasses = "text-gray-600 hover:bg-gray-100";
+  const activeClasses = "border-b-2 border-green-400 text-green-400 font-['Raleway'] pb-4 px-2";
+  const inactiveClasses = "text-gray-600 font-['Raleway'] px-2";
 
   const location = useLocation();
   const category = location.pathname.split('/')[1];
@@ -11,7 +11,7 @@ export default function Header() {
   const isActive = (path: string) => category === path;
 
   return (
-    <header className="relative bg-gray-100 text-black p-4 flex gap-4 z-20">
+    <header className="bg-white text-black pt-6 px-12 flex gap-4">
       <a
         href="/all"
         className={isActive('all') ? activeClasses : inactiveClasses}

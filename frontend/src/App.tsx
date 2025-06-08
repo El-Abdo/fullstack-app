@@ -6,7 +6,9 @@ import ProductListing from "./pages/ProductListing";
 function App() {
   return (
     <Router>
-      <Header />
+      <div className="relative z-20">
+        <Header />
+      </div>
       <Routes>
         <Route path="/:category" element={<ProductListing />} />
         <Route path="/" element={<Navigate to="/all" />} />
