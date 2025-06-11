@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import CartOverlay from './CartOverlay';
-import Bag from "../assets/eco-bag.png";
+import Bag from "../assets/eco-bag.svg";
 
 export default function Header() {
   const activeClasses = "border-b-2 border-green-400 text-green-400 font-['Raleway'] pb-4 px-2";
