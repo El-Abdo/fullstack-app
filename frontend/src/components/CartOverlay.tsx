@@ -45,13 +45,13 @@ export default function CartOverlay() {
       </button>
 
       {isOverlayOpen && (
-        <div className="absolute top-8 right-0 w-[24rem] bg-white border shadow-lg bg-opacity-40 z-20 p-4" data-testid="cart-overlay">
+        <div className="absolute top-8 right-0 w-[16rem] bg-white border shadow-lg bg-opacity-40 z-20 p-4" data-testid="cart-overlay">
           <span className="font-semibold">My Bag </span>{totalQuantity} {totalQuantity === 1 ? "Item" : "Items"}
           {order.items.map((item, index) => (
-            <div key={index} className="border-b pb-4 mb-4">
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <h2 className="text-md">{item.name}</h2>
+            <div key={index} className="mb-4 flex gap-4">
+                {/* properties */}
+                <div className="flex-1 mt-3">
+                  <h3 className="text-sm font-light font-['Raleway']">{item.name}</h3>
                   <div className="text-xs font-semibold" data-testid='cart-item-amount'>
                     {item.symbol}{item.price.toFixed(2)}
                   </div>
@@ -62,8 +62,8 @@ export default function CartOverlay() {
                                       key={attr.id}
                                       data-testid={`product-attribute-${toKebabCase(attr.name)}`}
                                     >
-                                      <span className="text-xs">{attr.name}:</span>
-                                      <div className="flex flex-wrap gap-2 mt-1">
+                                      <span className="text-[10px] font-['Raleway']">{attr.name}:</span>
+                                      <div className="flex flex-wrap gap-1 mt-1">
                                         {attr.items.map(item => (
                                           <ColorSwatch key={item.value} hexColor={item.value} isActive={false} isSelected={isSelected(attr.id, item.id, order.items[index].selectedAttributes)}/>
                                         ))}
@@ -74,8 +74,8 @@ export default function CartOverlay() {
                                   key={attr.name}
                                   data-testid={`product-attribute-${toKebabCase(attr.name)}`}
                                 >
-                                  <span className="text-xs">{attr.name}:</span>
-                                  <div className="flex flex-wrap gap-2 mt-1">
+                                  <span className="text-[10px] font-['Raleway']">{attr.name}:</span>
+                                  <div className="flex flex-wrap gap-1 mt-1">
                                     {attr.items.map(item => (
                                       <TextItem key={item.value} value={item.value} isActive={false} isSelected={isSelected(attr.id, item.id, order.items[index].selectedAttributes)}/>
                                     ))}
@@ -86,23 +86,25 @@ export default function CartOverlay() {
                                 
                               ))}
                 </div>
-                <div className="flex flex-col items-center gap-6 mt-3">
+                {/* image and quantity */}
+                <div className="flex gap-1">
+                  <div className="flex flex-col items-center gap-6 mt-3">
                     <button
                       onClick={() => increaseQuantity(index)} data-testid='cart-item-amount-increase'
-                      className="border px-2 py-1 rounded text-xsm cursor-pointer hover:bg-gray-700 hover:text-white"
+                      className="border px-2 text-xsm cursor-pointer hover:bg-black hover:text-white"
                     >
                       +
                     </button>
-                    <span className="text-xs">{item.quantity}</span>
+                    <span className="text-xs m-auto">{item.quantity}</span>
                     <button data-testid='cart-item-amount-decrease'
                       onClick={() => removeFromCart(index)}
-                      className="border px-2 py-1 rounded text-xsm cursor-pointer hover:bg-gray-700 hover:text-white"
+                      className="border px-2 text-xsm cursor-pointer hover:bg-black hover:text-white mt-auto"
                     >
                       -
                     </button>
                   </div>
-                  <img src={item.productImage} alt={item.name} className="w-20 h-full object-cover" />
-              </div>
+                  <img src={item.productImage} alt={item.name} className="w-20 object-fit mt-3" />
+                </div>
             </div>
           ))}
 
