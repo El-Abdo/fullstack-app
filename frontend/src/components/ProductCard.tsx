@@ -9,14 +9,12 @@ import QuickShop from "./QuickShop";
 
     return (
       <div
-        onClick={() => navigate(`/${product.category}/${product.id}`)}
-        className={`p-4 group w-[16rem] sm:w-[18rem] flex flex-col h-full cursor-pointer ${
-          product.inStock ? 'hover:shadow-lg' : ''
-        }`}
+        className="p-4 group w-[16rem] sm:w-[18rem] flex flex-col h-full cursor-pointer hover:shadow-lg"
         data-testid={`product-${toKebabCase(product.name)}`}
       >
         <div className="my-4 relative w-full h-80">
             <img
+              onClick={() => navigate(`/${product.category}/${product.id}`)}
               src={product.gallery[0]}
               alt={product.name}
               className={`w-full h-full object-cover transition-all ${
@@ -24,7 +22,7 @@ import QuickShop from "./QuickShop";
               }`}
             />
           {!product.inStock && (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-300">
+            <div className="absolute inset-0 flex items-center justify-center text-gray-300 pointer-events-none">
             <h1 className="text-xl">OUT OF STOCK</h1>
           </div>
           )}
@@ -38,9 +36,9 @@ import QuickShop from "./QuickShop";
          }
         </div>
        
-        <h2 className="text-lg">{product.name}</h2>
+        <h2 className="text-lg font-['Raleway']">{product.name}</h2>
         <p className="text-lg font-semibold">
-            {product.price.symbol}{product.price.amount.toFixed(2)} {product.price.currency}
+            {product.price.symbol}{product.price.amount.toFixed(2)}
         </p>
       </div>
     );
