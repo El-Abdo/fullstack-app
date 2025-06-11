@@ -21,7 +21,9 @@ export default function ProductDetails() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const { id } = useParams<{ id: string }>();
-  const product = products.find(p => p.id.toString() === id);
+  const { category } = useParams<{ category: string }>();
+  const filteredProducts = products.filter(p => p.category === category);
+  const product = filteredProducts.find(p => p.id.toString() === id);
   
   const [productAttributes, setProductAttributes] = useState<SelectedAttribute[]>([]);
 
@@ -35,8 +37,7 @@ export default function ProductDetails() {
       );
     }
   }, [product]);
-  const allAttributesSelected = productAttributes.length > 0 && 
-  productAttributes.every(attr => attr.selectedItemId !== null);
+  const allAttributesSelected =  productAttributes.every(attr => attr.selectedItemId !== null);
 
   const handleSelectAttribute = (attrId: number, itemId: number) => {
     setProductAttributes(prev => {
@@ -98,7 +99,7 @@ export default function ProductDetails() {
             </div>
 
             {/* main image */}
-            <div className="flex-1 relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+            <div className="flex-1 h-80 relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
               <img
                 src={product.gallery[activeImageIndex]}
                 alt={product.name}
@@ -169,7 +170,7 @@ export default function ProductDetails() {
             <p className="text-2xl font-bold">
               {product.price.symbol}{product.price.amount.toFixed(2)} {product.price.currency}
             </p>
-            <button onClick={() => product.inStock && handleAddToCart()} data-testid="add-to-cart" disabled={!allAttributesSelected || !product.inStock} className={`w-full text-white py-3 transition uppercase ${allAttributesSelected && product.inStock ? 'bg-green-400 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`} >
+            <button onClick={() => product.inStock && handleAddToCart()} data-testid="add-to-cart" disabled={!allAttributesSelected || !product.inStock} className={`w-full text-white py-3 transition uppercase cursor-pointer ${allAttributesSelected && product.inStock ? 'bg-green-400 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`} >
               add to cart
             </button>
             <div className="prose max-w-none" data-testid="product-description">
