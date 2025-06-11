@@ -103,8 +103,15 @@ export default function ProductDetails() {
               <img
                 src={product.gallery[activeImageIndex]}
                 alt={product.name}
-                className="w-full h-full object-contain p-4"
+                className={`w-full h-full object-contain p-4 ${
+                !product.inStock ? 'filter grayscale brightness-80 ' : ''
+              }`}
               />
+              {!product.inStock && (
+                <div className="absolute inset-0 flex items-center justify-center text-gray-500 pointer-events-none">
+                <h1 className="text-xl">OUT OF STOCK</h1>
+              </div>
+              )}
               {product.gallery.length > 1 && (
                 <>
                   <button
